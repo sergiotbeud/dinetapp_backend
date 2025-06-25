@@ -1,0 +1,145 @@
+{
+  "info": {
+    "name": "DinettApp Users API",
+    "_postman_id": "d1e2f3a4-b5c6-7890-1234-56789abcdef0",
+    "description": "Colección para probar el módulo de usuarios de DinettApp",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Crear Usuario (OK)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "test-tenant" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"user001\",\n  \"name\": \"Juan Pérez\",\n  \"nickname\": \"juanperez\",\n  \"phone\": \"+1234567890\",\n  \"email\": \"juan@example.com\",\n  \"role\": \"cashier\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"]
+        }
+      }
+    },
+    {
+      "name": "Crear Usuario (Email duplicado)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "test-tenant" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"user002\",\n  \"name\": \"María García\",\n  \"nickname\": \"mariagarcia\",\n  \"phone\": \"+1234567891\",\n  \"email\": \"juan@example.com\",\n  \"role\": \"manager\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"]
+        }
+      }
+    },
+    {
+      "name": "Obtener Usuario por ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "test-tenant" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users/user001",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users", "user001"]
+        }
+      }
+    },
+    {
+      "name": "Crear Usuario (Campos faltantes)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "test-tenant" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"user003\",\n  \"name\": \"Ana Rodríguez\",\n  \"phone\": \"+1234567893\",\n  \"email\": \"ana@example.com\",\n  \"role\": \"admin\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"]
+        }
+      }
+    },
+    {
+      "name": "Crear Usuario (Sin autorización)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "X-Tenant-ID", "value": "test-tenant" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"user004\",\n  \"name\": \"Luis Martínez\",\n  \"nickname\": \"luismartinez\",\n  \"phone\": \"+1234567894\",\n  \"email\": \"luis@example.com\",\n  \"role\": \"cashier\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"]
+        }
+      }
+    },
+    {
+      "name": "Obtener Usuario (No encontrado)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "test-tenant" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users/non-existent-id",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users", "non-existent-id"]
+        }
+      }
+    }
+  ]
+} 
