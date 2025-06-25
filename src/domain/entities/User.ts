@@ -19,11 +19,30 @@ export interface CreateUserRequest {
   role: string;
 }
 
+export interface SearchUserFilters {
+  id?: string;
+  name?: string;
+  email?: string;
+  role?: string;
+  tenantId: string;
+  page: number;
+  limit: number;
+}
+
+export interface SearchUserResult {
+  users: User[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
 export interface UserRepository {
   create(user: Omit<User, 'createdAt' | 'active'>): Promise<User>;
   findByEmail(email: string, tenantId: string): Promise<User | null>;
   findById(id: string, tenantId: string): Promise<User | null>;
   findByRole(role: string, tenantId: string): Promise<User[]>;
+  searchUsers(filters: SearchUserFilters): Promise<SearchUserResult>;
 }
 
 export class UserValidationError extends Error {

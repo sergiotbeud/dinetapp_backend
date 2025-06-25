@@ -1,5 +1,5 @@
 import { CreateUser } from '../../../src/application/use-cases/CreateUser';
-import { UserRepository } from '../../../src/domain/entities/User';
+import { UserRepository, User } from '../../../src/domain/entities/User';
 import { UnauthorizedError, UserDuplicateError } from '../../../src/domain/entities/User';
 
 // Mock del repositorio
@@ -8,6 +8,7 @@ const mockUserRepository: jest.Mocked<UserRepository> = {
   findByEmail: jest.fn(),
   findById: jest.fn(),
   findByRole: jest.fn(),
+  searchUsers: jest.fn(),
 };
 
 describe('CreateUser Use Case', () => {

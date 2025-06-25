@@ -4,7 +4,7 @@ export interface AuthenticatedRequest extends Request {
   user?: {
     id: string;
     email: string;
-    tenantId: string;
+    tenantId?: string;
     permissions: string[];
   };
   tenantId?: string;
@@ -23,7 +23,7 @@ export const resolveTenant = (req: AuthenticatedRequest, res: Response, next: Ne
   if (!tenantId) {
     res.status(400).json({
       success: false,
-      error: 'Tenant ID Required',
+      error: 'Tenant ID is required',
       message: 'Tenant ID must be provided in X-Tenant-ID header or authentication token'
     });
     return;
@@ -47,13 +47,27 @@ export const mockAuthMiddleware = (req: AuthenticatedRequest, res: Response, nex
     return;
   }
   
+  // Obtener permisos del header x-user-permissions si está presente
+  let permissions: string[] = ['user.create', 'user.read', 'user.update', 'user.delete'];
+  const permissionsHeader = req.headers['x-user-permissions'];
+  if (permissionsHeader && typeof permissionsHeader === 'string') {
+    permissions = permissionsHeader.split(',').map(p => p.trim());
+  }
+  
   // Simular usuario autenticado con permisos
-  req.user = {
+  const user: any = {
     id: 'mock-user-id',
     email: 'admin@example.com',
-    tenantId: req.headers['x-tenant-id'] as string || 'default',
-    permissions: ['user.create', 'user.read', 'user.update', 'user.delete']
+    permissions
   };
+  
+  // Solo agregar tenantId si está presente en el header
+  const headerTenantId = req.headers['x-tenant-id'] as string;
+  if (headerTenantId) {
+    user.tenantId = headerTenantId;
+  }
+  
+  req.user = user;
   
   next();
 }; 

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
   nickname VARCHAR(50) NOT NULL,
   phone VARCHAR(20) NOT NULL,
   email VARCHAR(255) NOT NULL,
-  role ENUM('admin', 'manager', 'cashier', 'viewer') NOT NULL,
+  role VARCHAR(20) NOT NULL,
   tenant_id VARCHAR(50) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   active BOOLEAN DEFAULT TRUE,

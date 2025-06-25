@@ -65,6 +65,210 @@
       }
     },
     {
+      "name": "Buscar Usuarios por Nombre",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "test-tenant" },
+          { "key": "X-User-Permissions", "value": "user.read" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users?name=Juan",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"],
+          "query": [
+            {
+              "key": "name",
+              "value": "Juan"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar Usuarios por Rol",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "test-tenant" },
+          { "key": "X-User-Permissions", "value": "user.read" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users?role=cashier",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"],
+          "query": [
+            {
+              "key": "role",
+              "value": "cashier"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar Usuarios por Email",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "test-tenant" },
+          { "key": "X-User-Permissions", "value": "user.read" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users?email=juan@example.com",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"],
+          "query": [
+            {
+              "key": "email",
+              "value": "juan@example.com"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar Usuarios por ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "test-tenant" },
+          { "key": "X-User-Permissions", "value": "user.read" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users?id=user001",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"],
+          "query": [
+            {
+              "key": "id",
+              "value": "user001"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar Usuarios con Filtros Combinados",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "test-tenant" },
+          { "key": "X-User-Permissions", "value": "user.read" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users?name=Juan&role=cashier",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"],
+          "query": [
+            {
+              "key": "name",
+              "value": "Juan"
+            },
+            {
+              "key": "role",
+              "value": "cashier"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar Usuarios con Paginación",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "test-tenant" },
+          { "key": "X-User-Permissions", "value": "user.read" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users?role=cashier&page=1&limit=5",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"],
+          "query": [
+            {
+              "key": "role",
+              "value": "cashier"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar Usuarios (Sin Resultados)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "test-tenant" },
+          { "key": "X-User-Permissions", "value": "user.read" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users?name=NonExistent",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"],
+          "query": [
+            {
+              "key": "name",
+              "value": "NonExistent"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar Usuarios (Sin Permisos)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "test-tenant" },
+          { "key": "X-User-Permissions", "value": "user.create" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users?name=Juan",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"],
+          "query": [
+            {
+              "key": "name",
+              "value": "Juan"
+            }
+          ]
+        }
+      }
+    },
+    {
       "name": "Obtener Usuario por ID",
       "request": {
         "method": "GET",
@@ -138,6 +342,125 @@
           "host": ["localhost"],
           "port": "3000",
           "path": ["api", "users", "non-existent-id"]
+        }
+      }
+    },
+    {
+      "name": "Buscar Usuarios (Sin Tenant ID)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-User-Permissions", "value": "user.read" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users?name=Juan",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"],
+          "query": [
+            {
+              "key": "name",
+              "value": "Juan"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar Usuarios (Paginación Avanzada)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "test-tenant" },
+          { "key": "X-User-Permissions", "value": "user.read" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users?page=2&limit=3",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"],
+          "query": [
+            {
+              "key": "page",
+              "value": "2"
+            },
+            {
+              "key": "limit",
+              "value": "3"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar Usuarios (Todos los filtros)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "test-tenant" },
+          { "key": "X-User-Permissions", "value": "user.read" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users?id=user001&name=Juan&email=juan@example.com&role=cashier&page=1&limit=10",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"],
+          "query": [
+            {
+              "key": "id",
+              "value": "user001"
+            },
+            {
+              "key": "name",
+              "value": "Juan"
+            },
+            {
+              "key": "email",
+              "value": "juan@example.com"
+            },
+            {
+              "key": "role",
+              "value": "cashier"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar Usuarios (Aislamiento Tenant)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer mock-token" },
+          { "key": "X-Tenant-ID", "value": "other-tenant" },
+          { "key": "X-User-Permissions", "value": "user.read" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/users?name=Juan",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "users"],
+          "query": [
+            {
+              "key": "name",
+              "value": "Juan"
+            }
+          ]
         }
       }
     }
