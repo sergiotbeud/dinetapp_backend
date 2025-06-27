@@ -6,6 +6,9 @@ import swaggerUi from 'swagger-ui-express';
 import dotenv from 'dotenv';
 
 import userRoutes from './interfaces/http/routes/user.routes';
+import authRoutes from './interfaces/http/routes/auth.routes';
+import tenantRoutes from './interfaces/http/routes/tenant.routes';
+import { authenticate } from './interfaces/middleware/authenticate';
 import { specs } from './config/swagger';
 import { DatabaseConnection } from './infrastructure/db/mysql/DatabaseConnection';
 
@@ -48,7 +51,9 @@ app.get('/health', (req, res) => {
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // API Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/tenants', tenantRoutes);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -93,4 +98,8 @@ async function startServer() {
   }
 }
 
-startServer(); 
+export default app;
+
+if (require.main === module) {
+  startServer();
+} 

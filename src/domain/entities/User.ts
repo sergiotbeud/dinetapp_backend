@@ -5,7 +5,10 @@ export interface User {
   phone: string;
   email: string;
   role: string;
+  password: string;
   createdAt: Date;
+  updatedAt?: Date;
+  lastLogin?: Date;
   active: boolean;
   tenantId: string;
 }
@@ -17,6 +20,20 @@ export interface CreateUserRequest {
   phone: string;
   email: string;
   role: string;
+  password: string;
+}
+
+export interface UpdateUserRequest {
+  name?: string;
+  nickname?: string;
+  phone?: string;
+  email?: string;
+  role?: string;
+  password?: string;
+}
+
+export interface DeleteUserRequest {
+  reason?: string;
 }
 
 export interface SearchUserFilters {
@@ -38,11 +55,15 @@ export interface SearchUserResult {
 }
 
 export interface UserRepository {
-  create(user: Omit<User, 'createdAt' | 'active'>): Promise<User>;
+  create(user: Omit<User, 'createdAt' | 'active' | 'lastLogin'>): Promise<User>;
   findByEmail(email: string, tenantId: string): Promise<User | null>;
   findById(id: string, tenantId: string): Promise<User | null>;
   findByRole(role: string, tenantId: string): Promise<User[]>;
   searchUsers(filters: SearchUserFilters): Promise<SearchUserResult>;
+  updateUser(id: string, tenantId: string, updates: UpdateUserRequest): Promise<User>;
+  deleteUser(id: string, tenantId: string, data: DeleteUserRequest): Promise<boolean>;
+  validateCredentials(email: string, password: string, tenantId: string): Promise<User | null>;
+  updateLastLogin(id: string, tenantId: string): Promise<void>;
 }
 
 export class UserValidationError extends Error {
@@ -70,5 +91,12 @@ export class UnauthorizedError extends Error {
   constructor(message: string) {
     super(message);
     this.name = 'UnauthorizedError';
+  }
+}
+
+export class AuthenticationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'AuthenticationError';
   }
 } 

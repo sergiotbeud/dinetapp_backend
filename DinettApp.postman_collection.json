@@ -2,7 +2,7 @@
   "info": {
     "name": "DinettApp Users API",
     "_postman_id": "d1e2f3a4-b5c6-7890-1234-56789abcdef0",
-    "description": "Colección para probar el módulo de usuarios de DinettApp",
+    "description": "Colección para probar el módulo de usuarios de DinettApp organizada por pasos y casos.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -21,448 +21,964 @@
       }
     },
     {
-      "name": "Crear Usuario (OK)",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "test-tenant" },
-          { "key": "Content-Type", "value": "application/json" }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"id\": \"user001\",\n  \"name\": \"Juan Pérez\",\n  \"nickname\": \"juanperez\",\n  \"phone\": \"+1234567890\",\n  \"email\": \"juan@example.com\",\n  \"role\": \"cashier\"\n}"
+      "name": "Gestión de Tenants",
+      "item": [
+        {
+          "name": "Exitosos",
+          "item": [
+            {
+              "name": "Crear tenant",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"paul-store\",\n  \"name\": \"Tienda de Paul\",\n  \"businessName\": \"Paul's Electronics Store\",\n  \"ownerName\": \"Paul Johnson\",\n  \"ownerEmail\": \"paul@paulstore.com\",\n  \"phone\": \"+1234567890\",\n  \"address\": \"123 Main St, City\",\n  \"taxId\": \"TAX123456\",\n  \"subscriptionPlan\": \"basic\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/tenants",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "tenants"]
+                }
+              }
+            },
+            {
+              "name": "Obtener tenant por ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/api/tenants/paul-store",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "tenants", "paul-store"]
+                }
+              }
+            },
+            {
+              "name": "Listar todos los tenants",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/api/tenants",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "tenants"]
+                }
+              }
+            },
+            {
+              "name": "Actualizar tenant",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Tienda de Paul Actualizada\",\n  \"phone\": \"+1111111111\",\n  \"address\": \"456 New St, City\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/tenants/paul-store",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "tenants", "paul-store"]
+                }
+              }
+            },
+            {
+              "name": "Suspender tenant",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/api/tenants/paul-store/suspend",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "tenants", "paul-store", "suspend"]
+                }
+              }
+            },
+            {
+              "name": "Activar tenant",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/api/tenants/paul-store/activate",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "tenants", "paul-store", "activate"]
+                }
+              }
+            }
+          ]
         },
-        "url": {
-          "raw": "http://localhost:3000/api/users",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"]
+        {
+          "name": "Error",
+          "item": [
+            {
+              "name": "Crear tenant con ID duplicado",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"paul-store\",\n  \"name\": \"Tienda Duplicada\",\n  \"businessName\": \"Duplicate Store\",\n  \"ownerName\": \"John Doe\",\n  \"ownerEmail\": \"john@test.com\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/tenants",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "tenants"]
+                }
+              }
+            },
+            {
+              "name": "Crear tenant con email duplicado",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"david-store\",\n  \"name\": \"Tienda de David\",\n  \"businessName\": \"David's Store\",\n  \"ownerName\": \"David Smith\",\n  \"ownerEmail\": \"paul@paulstore.com\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/tenants",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "tenants"]
+                }
+              }
+            },
+            {
+              "name": "Crear tenant con datos inválidos",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"test\",\n  \"name\": \"\",\n  \"businessName\": \"Store\",\n  \"ownerName\": \"John\",\n  \"ownerEmail\": \"invalid-email\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/tenants",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "tenants"]
+                }
+              }
+            },
+            {
+              "name": "Obtener tenant inexistente",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/api/tenants/non-existent",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "tenants", "non-existent"]
+                }
+              }
+            }
+          ]
         }
-      }
+      ]
     },
     {
-      "name": "Crear Usuario (Email duplicado)",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "test-tenant" },
-          { "key": "Content-Type", "value": "application/json" }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"id\": \"user002\",\n  \"name\": \"María García\",\n  \"nickname\": \"mariagarcia\",\n  \"phone\": \"+1234567891\",\n  \"email\": \"juan@example.com\",\n  \"role\": \"manager\"\n}"
+      "name": "Paso 1 - Crear Usuario",
+      "item": [
+        {
+          "name": "Exitosos",
+          "item": [
+            {
+              "name": "Crear un usuario",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"user001\",\n  \"name\": \"Juan Pérez\",\n  \"nickname\": \"juanperez\",\n  \"phone\": \"+1234567890\",\n  \"email\": \"juan@example.com\",\n  \"role\": \"cashier\",\n  \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/users",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"]
+                }
+              }
+            }
+          ]
         },
-        "url": {
-          "raw": "http://localhost:3000/api/users",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"]
-        }
-      }
-    },
-    {
-      "name": "Buscar Usuarios por Nombre",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "test-tenant" },
-          { "key": "X-User-Permissions", "value": "user.read" }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/users?name=Juan",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"],
-          "query": [
+        {
+          "name": "Error",
+          "item": [
             {
-              "key": "name",
-              "value": "Juan"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Buscar Usuarios por Rol",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "test-tenant" },
-          { "key": "X-User-Permissions", "value": "user.read" }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/users?role=cashier",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"],
-          "query": [
-            {
-              "key": "role",
-              "value": "cashier"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Buscar Usuarios por Email",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "test-tenant" },
-          { "key": "X-User-Permissions", "value": "user.read" }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/users?email=juan@example.com",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"],
-          "query": [
-            {
-              "key": "email",
-              "value": "juan@example.com"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Buscar Usuarios por ID",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "test-tenant" },
-          { "key": "X-User-Permissions", "value": "user.read" }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/users?id=user001",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"],
-          "query": [
-            {
-              "key": "id",
-              "value": "user001"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Buscar Usuarios con Filtros Combinados",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "test-tenant" },
-          { "key": "X-User-Permissions", "value": "user.read" }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/users?name=Juan&role=cashier",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"],
-          "query": [
-            {
-              "key": "name",
-              "value": "Juan"
+              "name": "Email duplicado",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"user002\",\n  \"name\": \"María García\",\n  \"nickname\": \"mariagarcia\",\n  \"phone\": \"+1234567891\",\n  \"email\": \"juan@example.com\",\n  \"role\": \"manager\",\n  \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/users",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"]
+                }
+              }
             },
             {
-              "key": "role",
-              "value": "cashier"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Buscar Usuarios con Paginación",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "test-tenant" },
-          { "key": "X-User-Permissions", "value": "user.read" }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/users?role=cashier&page=1&limit=5",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"],
-          "query": [
-            {
-              "key": "role",
-              "value": "cashier"
+              "name": "Campos faltantes",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"user003\",\n  \"name\": \"Ana Rodríguez\",\n  \"phone\": \"+1234567893\",\n  \"email\": \"ana@example.com\",\n  \"role\": \"admin\",\n  \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/users",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"]
+                }
+              }
             },
             {
-              "key": "page",
-              "value": "1"
+              "name": "Sin autenticación",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"user004\",\n  \"name\": \"Luis Martínez\",\n  \"nickname\": \"luismartinez\",\n  \"phone\": \"+1234567894\",\n  \"email\": \"luis@example.com\",\n  \"role\": \"cashier\",\n  \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/users",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Paso 2 - Buscar Usuario",
+      "item": [
+        {
+          "name": "Exitosos",
+          "item": [
+            {
+              "name": "Buscar por nombre",
+              "request": {
+                "method": "GET",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/users?name=Juan",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"],
+                  "query": [
+                    { "key": "name", "value": "Juan" }
+                  ]
+                }
+              }
             },
             {
-              "key": "limit",
-              "value": "5"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Buscar Usuarios (Sin Resultados)",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "test-tenant" },
-          { "key": "X-User-Permissions", "value": "user.read" }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/users?name=NonExistent",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"],
-          "query": [
+              "name": "Buscar por rol",
+              "request": {
+                "method": "GET",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/users?role=cashier",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"],
+                  "query": [
+                    { "key": "role", "value": "cashier" }
+                  ]
+                }
+              }
+            },
             {
-              "key": "name",
-              "value": "NonExistent"
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Buscar Usuarios (Sin Permisos)",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "test-tenant" },
-          { "key": "X-User-Permissions", "value": "user.create" }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/users?name=Juan",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"],
-          "query": [
+              "name": "Buscar por email",
+              "request": {
+                "method": "GET",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/users?email=juan@example.com",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"],
+                  "query": [
+                    { "key": "email", "value": "juan@example.com" }
+                  ]
+                }
+              }
+            },
             {
-              "key": "name",
-              "value": "Juan"
+              "name": "Buscar por ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/users?id=user001",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"],
+                  "query": [
+                    { "key": "id", "value": "user001" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Filtros combinados",
+              "request": {
+                "method": "GET",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/users?name=Juan&role=cashier",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"],
+                  "query": [
+                    { "key": "name", "value": "Juan" },
+                    { "key": "role", "value": "cashier" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Paginación",
+              "request": {
+                "method": "GET",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/users?role=cashier&page=1&limit=5",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"],
+                  "query": [
+                    { "key": "role", "value": "cashier" },
+                    { "key": "page", "value": "1" },
+                    { "key": "limit", "value": "5" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Sin resultados",
+              "request": {
+                "method": "GET",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/users?name=NonExistent",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"],
+                  "query": [
+                    { "key": "name", "value": "NonExistent" }
+                  ]
+                }
+              }
             }
           ]
-        }
-      }
-    },
-    {
-      "name": "Obtener Usuario por ID",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "test-tenant" }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/users/user001",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users", "user001"]
-        }
-      }
-    },
-    {
-      "name": "Crear Usuario (Campos faltantes)",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "test-tenant" },
-          { "key": "Content-Type", "value": "application/json" }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"id\": \"user003\",\n  \"name\": \"Ana Rodríguez\",\n  \"phone\": \"+1234567893\",\n  \"email\": \"ana@example.com\",\n  \"role\": \"admin\"\n}"
         },
-        "url": {
-          "raw": "http://localhost:3000/api/users",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"]
+        {
+          "name": "Error",
+          "item": [
+            {
+              "name": "Sin autenticación",
+              "request": {
+                "method": "GET",
+                "header": [
+                  { "key": "X-Tenant-ID", "value": "test-tenant" }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/users?name=Juan",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"],
+                  "query": [
+                    { "key": "name", "value": "Juan" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Sin Tenant ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/users?name=Juan",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"],
+                  "query": [
+                    { "key": "name", "value": "Juan" }
+                  ]
+                }
+              }
+            }
+          ]
         }
-      }
+      ]
     },
     {
-      "name": "Crear Usuario (Sin autorización)",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "X-Tenant-ID", "value": "test-tenant" },
-          { "key": "Content-Type", "value": "application/json" }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"id\": \"user004\",\n  \"name\": \"Luis Martínez\",\n  \"nickname\": \"luismartinez\",\n  \"phone\": \"+1234567894\",\n  \"email\": \"luis@example.com\",\n  \"role\": \"cashier\"\n}"
+      "name": "Paso 3 - Actualizar Usuario",
+      "item": [
+        {
+          "name": "Exitosos",
+          "item": [
+            {
+              "name": "Actualizar todos los campos",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Juan Actualizado\",\n  \"nickname\": \"juanactualizado\",\n  \"phone\": \"+1111111111\",\n  \"email\": \"juan.actualizado@example.com\",\n  \"role\": \"admin\",\n  \"password\": \"newpassword123\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/users/user001",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users", "user001"]
+                }
+              }
+            },
+            {
+              "name": "Actualizar parcialmente un campo",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nickname\": \"juanparcial\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/users/user001",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users", "user001"]
+                }
+              }
+            }
+          ]
         },
-        "url": {
-          "raw": "http://localhost:3000/api/users",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"]
-        }
-      }
-    },
-    {
-      "name": "Obtener Usuario (No encontrado)",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "test-tenant" }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/users/non-existent-id",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users", "non-existent-id"]
-        }
-      }
-    },
-    {
-      "name": "Buscar Usuarios (Sin Tenant ID)",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-User-Permissions", "value": "user.read" }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/users?name=Juan",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"],
-          "query": [
+        {
+          "name": "Error",
+          "item": [
             {
-              "key": "name",
-              "value": "Juan"
+              "name": "Email duplicado",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"mariagarcia@example.com\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/users/user001",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users", "user001"]
+                }
+              }
+            },
+            {
+              "name": "Datos inválidos",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"no-es-email\",\n  \"role\": \"invalido\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/users/user001",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users", "user001"]
+                }
+              }
+            },
+            {
+              "name": "Usuario no existe",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"X\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/users/noexiste",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users", "noexiste"]
+                }
+              }
+            },
+            {
+              "name": "Usuario de otro tenant",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "otro-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"X\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/users/user001",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users", "user001"]
+                }
+              }
+            },
+            {
+              "name": "Sin autenticación",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"X\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/users/user001",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users", "user001"]
+                }
+              }
+            },
+            {
+              "name": "Sin campos",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/users/user001",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users", "user001"]
+                }
+              }
             }
           ]
         }
-      }
+      ]
     },
     {
-      "name": "Buscar Usuarios (Paginación Avanzada)",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "test-tenant" },
-          { "key": "X-User-Permissions", "value": "user.read" }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/users?page=2&limit=3",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"],
-          "query": [
+      "name": "Paso 4 - Eliminar Usuario",
+      "item": [
+        {
+          "name": "Exitosos",
+          "item": [
             {
-              "key": "page",
-              "value": "2"
+              "name": "Eliminar usuario exitosamente",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Usuario dado de baja\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/users/user001",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users", "user001"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error",
+          "item": [
+            {
+              "name": "Usuario no existe",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"reason\": \"Test\"\n}" },
+                "url": {
+                  "raw": "http://localhost:3000/api/users/noexiste",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users", "noexiste"]
+                }
+              }
             },
             {
-              "key": "limit",
-              "value": "3"
+              "name": "Sin autenticación",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"reason\": \"Test\"\n}" },
+                "url": {
+                  "raw": "http://localhost:3000/api/users/user001",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users", "user001"]
+                }
+              }
+            },
+            {
+              "name": "Sin tenant",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"reason\": \"Test\"\n}" },
+                "url": {
+                  "raw": "http://localhost:3000/api/users/user001",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users", "user001"]
+                }
+              }
+            },
+            {
+              "name": "Razón demasiado larga",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"reason\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n}" },
+                "url": {
+                  "raw": "http://localhost:3000/api/users/user001",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users", "user001"]
+                }
+              }
+            },
+            {
+              "name": "Usuario de otro tenant",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "otro-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"reason\": \"Test\"\n}" },
+                "url": {
+                  "raw": "http://localhost:3000/api/users/user001",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users", "user001"]
+                }
+              }
             }
           ]
         }
-      }
+      ]
     },
     {
-      "name": "Buscar Usuarios (Todos los filtros)",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "test-tenant" },
-          { "key": "X-User-Permissions", "value": "user.read" }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/users?id=user001&name=Juan&email=juan@example.com&role=cashier&page=1&limit=10",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"],
-          "query": [
+      "name": "Paso 5 - Autenticación",
+      "item": [
+        {
+          "name": "Exitosos",
+          "item": [
             {
-              "key": "id",
-              "value": "user001"
+              "name": "Login exitoso",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"auth@test.com\",\n  \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/auth/login",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "auth", "login"]
+                }
+              }
             },
             {
-              "key": "name",
-              "value": "Juan"
+              "name": "Logout exitoso",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/auth/logout",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "auth", "logout"]
+                }
+              }
             },
             {
-              "key": "email",
-              "value": "juan@example.com"
+              "name": "Acceso a endpoint protegido con sesión",
+              "request": {
+                "method": "GET",
+                "header": [
+                  { "key": "X-Session-ID", "value": "{{sessionId}}" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/users",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error",
+          "item": [
+            {
+              "name": "Login con credenciales inválidas",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "X-Tenant-ID", "value": "test-tenant" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"auth@test.com\",\n  \"password\": \"wrongpassword\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/auth/login",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "auth", "login"]
+                }
+              }
             },
             {
-              "key": "role",
-              "value": "cashier"
+              "name": "Login sin tenant ID",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"auth@test.com\",\n  \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/auth/login",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "auth", "login"]
+                }
+              }
             },
             {
-              "key": "page",
-              "value": "1"
+              "name": "Logout sin sesión",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/api/auth/logout",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "auth", "logout"]
+                }
+              }
             },
             {
-              "key": "limit",
-              "value": "10"
+              "name": "Acceso a endpoint protegido sin sesión",
+              "request": {
+                "method": "GET",
+                "header": [
+                  { "key": "X-Tenant-ID", "value": "test-tenant" }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/users",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"]
+                }
+              }
+            },
+            {
+              "name": "Acceso a endpoint protegido con sesión inválida",
+              "request": {
+                "method": "GET",
+                "header": [
+                  { "key": "X-Session-ID", "value": "invalid-session-id" },
+                  { "key": "X-Tenant-ID", "value": "test-tenant" }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/users",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "users"]
+                }
+              }
             }
           ]
         }
-      }
-    },
-    {
-      "name": "Buscar Usuarios (Aislamiento Tenant)",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer mock-token" },
-          { "key": "X-Tenant-ID", "value": "other-tenant" },
-          { "key": "X-User-Permissions", "value": "user.read" }
-        ],
-        "url": {
-          "raw": "http://localhost:3000/api/users?name=Juan",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "3000",
-          "path": ["api", "users"],
-          "query": [
-            {
-              "key": "name",
-              "value": "Juan"
-            }
-          ]
-        }
-      }
+      ]
     }
   ]
 } 

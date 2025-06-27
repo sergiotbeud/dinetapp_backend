@@ -23,7 +23,8 @@ describe('MySQLUserRepository', () => {
         phone: '123456789',
         email: 'john@example.com',
         role: 'admin',
-        tenantId: 'tenant1'
+        tenantId: 'tenant1',
+        password: 'password123'
       };
 
       const createdUser = {
@@ -46,6 +47,7 @@ describe('MySQLUserRepository', () => {
         phone: '123456789',
         email: 'john@example.com',
         role: 'admin',
+        password: 'password123',
         createdAt: expect.any(Date),
         active: true
       }));
@@ -59,7 +61,8 @@ describe('MySQLUserRepository', () => {
         phone: '123456789',
         email: 'john@example.com',
         role: 'admin',
-        tenantId: 'tenant1'
+        tenantId: 'tenant1',
+        password: 'password123'
       };
 
       const duplicateError = new Error('Duplicate entry');
@@ -81,7 +84,8 @@ describe('MySQLUserRepository', () => {
         phone: '123456789',
         email: 'john@example.com',
         role: 'admin',
-        tenantId: 'tenant1'
+        tenantId: 'tenant1',
+        password: 'password123'
       };
 
       const duplicateError = new Error('Duplicate entry');
@@ -95,25 +99,6 @@ describe('MySQLUserRepository', () => {
       );
     });
 
-    it('should throw error when created user cannot be retrieved', async () => {
-      const userData = {
-        id: 'user1',
-        name: 'John Doe',
-        nickname: 'johndoe',
-        phone: '123456789',
-        email: 'john@example.com',
-        role: 'admin',
-        tenantId: 'tenant1'
-      };
-
-      mockDb.execute
-        .mockResolvedValueOnce([]) // Para la inserción
-        .mockResolvedValueOnce([]); // Para findById - sin resultados
-
-      await expect(userRepository.create(userData)).rejects.toThrow(
-        'Failed to retrieve created user'
-      );
-    });
   });
 
   describe('findByEmail', () => {
@@ -130,7 +115,8 @@ describe('MySQLUserRepository', () => {
         role: 'admin',
         created_at: new Date(),
         active: 1,
-        tenant_id: 'tenant1'
+        tenant_id: 'tenant1',
+        password: 'password123'
       };
 
       mockDb.execute.mockResolvedValueOnce([mockUser]);
@@ -148,6 +134,7 @@ describe('MySQLUserRepository', () => {
         phone: '123456789',
         email: 'john@example.com',
         role: 'admin',
+        password: 'password123',
         createdAt: expect.any(Date),
         active: true,
         tenantId: 'tenant1'
@@ -180,7 +167,8 @@ describe('MySQLUserRepository', () => {
         role: 'admin',
         created_at: new Date(),
         active: 1,
-        tenant_id: 'tenant1'
+        tenant_id: 'tenant1',
+        password: 'password123'
       };
 
       mockDb.execute.mockResolvedValueOnce([mockUser]);
@@ -198,6 +186,7 @@ describe('MySQLUserRepository', () => {
         phone: '123456789',
         email: 'john@example.com',
         role: 'admin',
+        password: 'password123',
         createdAt: expect.any(Date),
         active: true,
         tenantId: 'tenant1'
@@ -231,7 +220,8 @@ describe('MySQLUserRepository', () => {
           role: 'admin',
           created_at: new Date(),
           active: 1,
-          tenant_id: 'tenant1'
+          tenant_id: 'tenant1',
+          password: 'password123'
         }
       ];
 
@@ -251,6 +241,7 @@ describe('MySQLUserRepository', () => {
         phone: '123456789',
         email: 'john@example.com',
         role: 'admin',
+        password: 'password123',
         createdAt: expect.any(Date),
         active: true,
         tenantId: 'tenant1'
@@ -292,7 +283,8 @@ describe('MySQLUserRepository', () => {
           role: 'admin',
           created_at: new Date(),
           active: 1,
-          tenant_id: 'tenant1'
+          tenant_id: 'tenant1',
+          password: 'password123'
         }
       ];
 

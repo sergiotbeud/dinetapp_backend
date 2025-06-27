@@ -1,12 +1,18 @@
 import { User, UserRepository, SearchUserFilters, SearchUserResult } from '../../domain/entities/User';
 import { CreateUserUseCase } from '../use-cases/CreateUser';
 import { SearchUsers } from '../use-cases/SearchUsers';
+import { UpdateUserUseCase } from '../use-cases/UpdateUser';
+import { DeleteUserUseCase } from '../use-cases/DeleteUser';
+import { UpdateUserDto } from '../dtos/UpdateUserDto';
+import { DeleteUserDto } from '../dtos/DeleteUserDto';
 
 export class UserService {
   constructor(
     private userRepository: UserRepository,
     private createUserUseCase: CreateUserUseCase,
-    private searchUsersUseCase: SearchUsers
+    private searchUsersUseCase: SearchUsers,
+    private updateUserUseCase: UpdateUserUseCase,
+    private deleteUserUseCase: DeleteUserUseCase
   ) {}
 
   async createUser(data: any, tenantId: string, userPermissions: string[]): Promise<User> {
@@ -33,6 +39,14 @@ export class UserService {
     if (searchParams.role) filters.role = searchParams.role;
 
     return this.searchUsersUseCase.execute(filters);
+  }
+
+  async updateUser(id: string, data: UpdateUserDto, tenantId: string, userPermissions: string[]): Promise<User> {
+    return this.updateUserUseCase.execute(id, data, tenantId, userPermissions);
+  }
+
+  async deleteUser(id: string, data: DeleteUserDto, tenantId: string, userPermissions: string[]): Promise<boolean> {
+    return this.deleteUserUseCase.execute(id, data, tenantId, userPermissions);
   }
 
   async getUserById(id: string, tenantId: string): Promise<User | null> {

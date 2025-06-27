@@ -1,208 +1,430 @@
-# DinettApp Backend - Sistema POS Multitenant
+# DinettApp POS API - Sistema Multitenant
 
-Sistema de Punto de Venta (POS) monolítico con soporte multitenant, construido con Node.js, Clean Architecture, MySQL y principios SOLID.
+Backend en Node.js para un sistema POS monolítico multitenant con Clean Architecture, MySQL y principios SOLID.
 
-## 🚀 Características
+## 🏗️ Arquitectura
 
-- ✅ Clean Architecture
-- ✅ Soporte Multitenant
-- ✅ Base de datos MySQL
-- ✅ Validaciones robustas
-- ✅ Control de acceso basado en roles
-- ✅ Pruebas unitarias e integración
-- ✅ Documentación API con Swagger
-- ✅ Rate limiting y seguridad
-- ✅ Listo para producción
+### Clean Architecture
+- **Domain**: Entidades y reglas de negocio
+- **Application**: Casos de uso y servicios
+- **Infrastructure**: Base de datos, web, sesiones
+- **Interfaces**: Controladores, rutas, middleware
 
-## 📋 Prerrequisitos
+### Sistema Multitenant
+El sistema implementa un modelo **multitenant por base de datos compartida** donde:
 
-- Node.js 18+
-- MySQL 8.0+
-- npm o yarn
+- Cada **tenant** representa una **tienda independiente**
+- Los datos se **aislan** mediante `tenant_id` en todas las tablas
+- La **autenticación** se basa en sesiones con validación de tenant
+- Cada tenant puede tener **múltiples usuarios** con diferentes roles
 
-## 🛠️ Instalación
+## 🏪 Gestión de Tenants
 
-1. **Clonar el repositorio**
-```bash
-git clone <repository-url>
-cd dinetapp_backend
-```
-
-2. **Instalar dependencias**
-```bash
-npm install
-```
-
-3. **Configurar variables de entorno**
-```bash
-cp env.example .env
-# Editar .env con tus configuraciones
-```
-
-4. **Configurar base de datos**
-```bash
-# Crear base de datos MySQL
-mysql -u root -p
-CREATE DATABASE dinett_pos;
-CREATE DATABASE dinett_pos_test;
-
-# Ejecutar migraciones
-mysql -u root -p dinett_pos < src/infrastructure/db/migrations/001_create_users_table.sql
-```
-
-5. **Ejecutar migraciones de prueba**
-```bash
-mysql -u root -p dinett_pos_test < src/infrastructure/db/migrations/001_create_users_table.sql
-```
-
-## 🏃‍♂️ Ejecución
-
-### Desarrollo
-```bash
-npm run dev
-```
-
-### Producción
-```bash
-npm run build
-npm start
-```
-
-## 🧪 Pruebas
-
-### Pruebas unitarias
-```bash
-npm test
-```
-
-### Pruebas de integración
-```bash
-npm run test:integration
-```
-
-### Cobertura de código
-```bash
-npm run test:coverage
-```
-
-## 📚 API Documentation
-
-Una vez que el servidor esté corriendo, puedes acceder a la documentación de la API en:
-
-- **Swagger UI**: http://localhost:3000/api-docs
-- **Health Check**: http://localhost:3000/health
-
-## 🔧 Endpoints
-
-### Usuarios
-
-#### POST /api/users
-Crear un nuevo usuario
-
-**Headers requeridos:**
-- `Authorization: Bearer <token>`
-- `X-Tenant-ID: <tenant-id>`
-
-**Body:**
+### Estructura de un Tenant
 ```json
 {
-  "id": "user123",
-  "name": "John Doe",
-  "nickname": "johndoe",
+  "id": "paul-store",
+  "name": "Tienda de Paul",
+  "businessName": "Paul's Electronics Store",
+  "ownerName": "Paul Johnson",
+  "ownerEmail": "paul@paulstore.com",
   "phone": "+1234567890",
-  "email": "john@example.com",
-  "role": "cashier"
+  "address": "123 Main St, City",
+  "taxId": "TAX123456",
+  "subscriptionPlan": "basic",
+  "status": "active"
 }
 ```
 
-**Respuesta exitosa (201):**
+### Estados de Tenant
+- **`active`**: Tenant funcionando normalmente
+- **`suspended`**: Tenant temporalmente suspendido
+- **`cancelled`**: Tenant cancelado permanentemente
+
+### API de Tenants
+
+#### Crear Tenant
+```http
+POST /api/tenants
+Content-Type: application/json
+
+{
+  "id": "paul-store",
+  "name": "Tienda de Paul",
+  "businessName": "Paul's Electronics Store",
+  "ownerName": "Paul Johnson",
+  "ownerEmail": "paul@paulstore.com",
+  "phone": "+1234567890",
+  "address": "123 Main St, City",
+  "taxId": "TAX123456",
+  "subscriptionPlan": "basic"
+}
+```
+
+#### Obtener Tenant
+```http
+GET /api/tenants/{tenantId}
+```
+
+#### Listar Tenants
+```http
+GET /api/tenants
+```
+
+#### Actualizar Tenant
+```http
+PUT /api/tenants/{tenantId}
+Content-Type: application/json
+
+{
+  "name": "Tienda Actualizada",
+  "phone": "+1111111111"
+}
+```
+
+#### Suspender/Activar Tenant
+```http
+POST /api/tenants/{tenantId}/suspend
+POST /api/tenants/{tenantId}/activate
+```
+
+## 🔐 Autenticación y Autorización
+
+### Sistema de Sesiones
+- **Sesiones en memoria** (estilo PHP)
+- **Sin costos** de infraestructura
+- **Validación automática** de tenant activo
+
+### Flujo de Autenticación
+
+#### 1. Login
+```http
+POST /api/auth/login
+X-Tenant-ID: paul-store
+Content-Type: application/json
+
+{
+  "email": "admin@paulstore.com",
+  "password": "password123"
+}
+```
+
+**Respuesta:**
 ```json
 {
   "success": true,
-  "message": "User created successfully",
+  "message": "Login successful",
   "data": {
-    "id": "user123",
-    "name": "John Doe",
-    "nickname": "johndoe",
-    "phone": "+1234567890",
-    "email": "john@example.com",
-    "role": "cashier",
-    "createdAt": "2024-01-01T00:00:00.000Z",
-    "active": true,
-    "tenantId": "tenant123"
+    "sessionId": "abc123-def456-ghi789",
+    "user": {
+      "id": "user001",
+      "email": "admin@paulstore.com",
+      "tenantId": "paul-store"
+    }
   }
 }
 ```
 
-#### GET /api/users/:id
-Obtener un usuario por ID
+#### 2. Acceso a Endpoints Protegidos
+```http
+GET /api/users
+X-Session-ID: abc123-def456-ghi789
+X-Tenant-ID: paul-store
+```
 
-**Headers requeridos:**
-- `Authorization: Bearer <token>`
-- `X-Tenant-ID: <tenant-id>`
+#### 3. Logout
+```http
+POST /api/auth/logout
+X-Session-ID: abc123-def456-ghi789
+```
 
-## 🏗️ Arquitectura
+### Validación de Tenant
+El middleware `resolveTenant` valida:
+- ✅ Tenant existe en la base de datos
+- ✅ Tenant está en estado `active`
+- ✅ Tenant coincide con la sesión del usuario
 
-El proyecto sigue Clean Architecture con las siguientes capas:
+## 🌐 Flujo desde Frontend
+
+### Opción 1: Subdominio por Tienda
+```
+https://paul-store.dinettapp.com/login
+https://david-store.dinettapp.com/login
+```
+
+### Opción 2: Subdirectorio
+```
+https://app.dinettapp.com/paul-store/login
+https://app.dinettapp.com/david-store/login
+```
+
+### Detección Automática del Tenant
+```javascript
+// Frontend - Detectar tenant automáticamente
+function getTenantFromURL() {
+  const hostname = window.location.hostname;
+  
+  // Opción 1: Subdominio
+  if (hostname.includes('.')) {
+    const subdomain = hostname.split('.')[0];
+    return subdomain;
+  }
+  
+  // Opción 2: Subdirectorio
+  const path = window.location.pathname;
+  const match = path.match(/^\/([^\/]+)/);
+  return match ? match[1] : null;
+}
+
+// Usar en login
+const tenantId = getTenantFromURL();
+```
+
+## 📊 Estructura de Base de Datos
+
+### Tabla `tenants`
+```sql
+CREATE TABLE tenants (
+  id VARCHAR(50) NOT NULL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  business_name VARCHAR(200) NOT NULL,
+  owner_name VARCHAR(100) NOT NULL,
+  owner_email VARCHAR(255) NOT NULL,
+  phone VARCHAR(20),
+  address TEXT,
+  tax_id VARCHAR(50),
+  subscription_plan VARCHAR(50) DEFAULT 'basic',
+  status ENUM('active', 'suspended', 'cancelled') DEFAULT 'active',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
+
+### Tabla `users` (con tenant_id)
+```sql
+CREATE TABLE users (
+  id VARCHAR(50) NOT NULL,
+  tenant_id VARCHAR(50) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  role VARCHAR(20) NOT NULL,
+  -- ... otros campos
+  PRIMARY KEY (id, tenant_id),
+  UNIQUE KEY unique_email_tenant (email, tenant_id)
+);
+```
+
+## 🚀 Instalación y Configuración
+
+### Prerrequisitos
+- Node.js 18+
+- MySQL 8.0+
+- npm o yarn
+
+### 1. Clonar y Instalar
+```bash
+git clone <repository>
+cd dinetapp_backend
+npm install
+```
+
+### 2. Configurar Variables de Entorno
+```bash
+cp .env.example .env
+```
+
+Editar `.env`:
+```env
+# Database
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=dinettapp
+
+# Server
+PORT=3000
+NODE_ENV=development
+
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+```
+
+### 3. Configurar Base de Datos
+```bash
+# Crear base de datos
+mysql -u root -p
+CREATE DATABASE dinettapp;
+USE dinettapp;
+exit;
+
+# Ejecutar migraciones
+npm run migrate
+```
+
+### 4. Ejecutar Tests
+```bash
+# Tests unitarios
+npm run test
+
+# Tests de integración
+npm run test:integration
+
+# Cobertura
+npm run test:coverage
+```
+
+### 5. Iniciar Servidor
+```bash
+# Desarrollo
+npm run dev
+
+# Producción
+npm start
+```
+
+## 📋 Endpoints Disponibles
+
+### Health Check
+- `GET /health` - Estado del servidor
+
+### Autenticación
+- `POST /api/auth/login` - Iniciar sesión
+- `POST /api/auth/logout` - Cerrar sesión
+
+### Gestión de Tenants
+- `POST /api/tenants` - Crear tenant
+- `GET /api/tenants` - Listar tenants
+- `GET /api/tenants/:id` - Obtener tenant
+- `PUT /api/tenants/:id` - Actualizar tenant
+- `DELETE /api/tenants/:id` - Eliminar tenant
+- `POST /api/tenants/:id/activate` - Activar tenant
+- `POST /api/tenants/:id/suspend` - Suspender tenant
+
+### Gestión de Usuarios
+- `POST /api/users` - Crear usuario
+- `GET /api/users` - Buscar usuarios
+- `PUT /api/users/:id` - Actualizar usuario
+- `DELETE /api/users/:id` - Eliminar usuario
+
+## 🧪 Testing
+
+### Pruebas Unitarias
+```bash
+npm run test
+```
+
+### Pruebas de Integración
+```bash
+npm run test:integration
+```
+
+### Cobertura
+```bash
+npm run test:coverage
+```
+
+## 📚 Documentación API
+
+La documentación interactiva está disponible en:
+```
+http://localhost:3000/api-docs
+```
+
+## 🔧 Scripts Disponibles
+
+```bash
+# Desarrollo
+npm run dev          # Servidor con hot reload
+npm run build        # Compilar TypeScript
+npm run start        # Servidor de producción
+
+# Testing
+npm run test         # Tests unitarios
+npm run test:watch   # Tests en modo watch
+npm run test:integration  # Tests de integración
+npm run test:coverage     # Cobertura de tests
+
+# Base de datos
+npm run migrate      # Ejecutar migraciones
+npm run migrate:make # Crear nueva migración
+npm run db:seed      # Poblar base de datos
+npm run db:reset     # Resetear base de datos
+
+# Linting
+npm run lint         # Verificar código
+npm run lint:fix     # Corregir código automáticamente
+```
+
+## 🏗️ Estructura del Proyecto
 
 ```
 src/
-├── domain/          # Entidades y reglas de negocio
-├── application/     # Casos de uso y servicios
-├── infrastructure/ # Base de datos y controladores web
-├── interfaces/     # Rutas y middleware
-├── config/         # Configuraciones
-└── main.ts         # Punto de entrada
+├── application/           # Capa de aplicación
+│   ├── dtos/             # Data Transfer Objects
+│   ├── services/         # Servicios de aplicación
+│   └── use-cases/        # Casos de uso
+├── domain/               # Capa de dominio
+│   └── entities/         # Entidades de negocio
+├── infrastructure/       # Capa de infraestructura
+│   ├── db/              # Base de datos
+│   │   ├── migrations/  # Migraciones
+│   │   └── mysql/       # Repositorios MySQL
+│   ├── session/         # Gestión de sesiones
+│   └── web/             # Controladores web
+└── interfaces/          # Capa de interfaces
+    ├── http/            # Rutas HTTP
+    └── middleware/      # Middleware
 ```
 
 ## 🔒 Seguridad
 
-- **Rate Limiting**: 100 requests por 15 minutos por IP
-- **Helmet**: Headers de seguridad
-- **CORS**: Configurado para desarrollo
-- **Validación**: Joi para validación de datos
-- **Multitenant**: Aislamiento por tenant
+### Validaciones Implementadas
+- ✅ **Validación de tenant activo** en cada request
+- ✅ **Aislamiento de datos** por tenant
+- ✅ **Validación de sesiones** en memoria
+- ✅ **Rate limiting** por IP
+- ✅ **Helmet** para headers de seguridad
+- ✅ **CORS** configurado
+- ✅ **Validación de entrada** en todos los endpoints
 
-## 🧪 Testing
+### Headers de Seguridad
+- `X-Session-ID`: ID de sesión válida
+- `X-Tenant-ID`: ID de tenant activo
+- `Content-Type`: application/json
 
-El proyecto incluye:
+## 📈 Escalabilidad
 
-- **Pruebas unitarias**: Jest + ts-jest
-- **Pruebas de integración**: Supertest
-- **Cobertura de código**: Jest coverage
-- **Mocks**: Para dependencias externas
+### Ventajas del Modelo Multitenant
+- ✅ **Aislamiento total** entre tiendas
+- ✅ **Escalabilidad horizontal** fácil
+- ✅ **Gestión centralizada** de tenants
+- ✅ **Costos reducidos** de infraestructura
+- ✅ **Actualizaciones simultáneas** para todos los tenants
 
-## 📝 Scripts Disponibles
-
-- `npm run dev`: Desarrollo con hot reload
-- `npm run build`: Compilar TypeScript
-- `npm start`: Ejecutar en producción
-- `npm test`: Pruebas unitarias
-- `npm run test:integration`: Pruebas de integración
-- `npm run test:coverage`: Cobertura de código
-- `npm run lint`: Linting
-- `npm run lint:fix`: Linting con auto-fix
+### Consideraciones de Rendimiento
+- **Índices optimizados** en `tenant_id`
+- **Queries filtradas** automáticamente por tenant
+- **Sesiones en memoria** para respuesta rápida
+- **Rate limiting** para prevenir abuso
 
 ## 🤝 Contribución
 
 1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
 3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
 4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+5. Abrir un Pull Request
 
 ## 📄 Licencia
 
 Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
 
-## 👥 Autores
+## 🆘 Soporte
 
-- **DinettApp Team** - *Desarrollo inicial*
-
-## 🙏 Agradecimientos
-
-- Clean Architecture por Uncle Bob
-- Node.js y Express.js
-- MySQL y mysql2
-- Jest para testing
-- Swagger para documentación 
+Para soporte técnico o preguntas:
+- 📧 Email: soporte@dinettapp.com
+- 📖 Documentación: [docs.dinettapp.com](https://docs.dinettapp.com)
+- 🐛 Issues: [GitHub Issues](https://github.com/dinettapp/backend/issues) 

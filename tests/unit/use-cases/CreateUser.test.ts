@@ -1,3 +1,4 @@
+import 'jest';
 import { CreateUser } from '../../../src/application/use-cases/CreateUser';
 import { UserRepository, User } from '../../../src/domain/entities/User';
 import { UnauthorizedError, UserDuplicateError } from '../../../src/domain/entities/User';
@@ -9,6 +10,10 @@ const mockUserRepository: jest.Mocked<UserRepository> = {
   findById: jest.fn(),
   findByRole: jest.fn(),
   searchUsers: jest.fn(),
+  updateUser: jest.fn(),
+  deleteUser: jest.fn(),
+  validateCredentials: jest.fn(),
+  updateLastLogin: jest.fn(),
 };
 
 describe('CreateUser Use Case', () => {
@@ -25,7 +30,8 @@ describe('CreateUser Use Case', () => {
     nickname: 'johndoe',
     phone: '+1234567890',
     email: 'john@example.com',
-    role: 'cashier'
+    role: 'cashier',
+    password: 'password123'
   };
 
   const validPermissions = ['user.create'];

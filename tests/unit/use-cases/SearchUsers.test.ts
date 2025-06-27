@@ -1,3 +1,4 @@
+import 'jest';
 import { SearchUsers } from '../../../src/application/use-cases/SearchUsers';
 import { UserRepository, SearchUserFilters, SearchUserResult } from '../../../src/domain/entities/User';
 
@@ -12,6 +13,10 @@ describe('SearchUsers', () => {
       findById: jest.fn(),
       findByRole: jest.fn(),
       searchUsers: jest.fn(),
+      updateUser: jest.fn(),
+      deleteUser: jest.fn(),
+      validateCredentials: jest.fn(),
+      updateLastLogin: jest.fn(),
     };
 
     searchUsers = new SearchUsers(mockUserRepository);
@@ -41,15 +46,6 @@ describe('SearchUsers', () => {
       expect(mockUserRepository.searchUsers).toHaveBeenCalledWith(filters);
       expect(result).toEqual(mockResult);
     });
-
-    it('should throw error when no filters are provided', async () => {
-      const filters: SearchUserFilters = {
-        tenantId: 'tenant1',
-        page: 1,
-        limit: 10
-      };
-
-      await expect(searchUsers.execute(filters)).rejects.toThrow('At least one search filter must be provided');
     });
 
     it('should throw error when page is less than 1', async () => {
@@ -325,5 +321,27 @@ describe('SearchUsers', () => {
       expect(mockUserRepository.searchUsers).toHaveBeenCalledWith(filters);
       expect(result).toEqual(mockResult);
     });
+
+    it('should search users with no specific filters (returns all users)', async () => {
+      const filters: SearchUserFilters = {
+        tenantId: 'tenant1',
+        page: 1,
+        limit: 10
+      };
+
+      const mockResult = {
+        users: [],
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0
+      };
+
+      mockUserRepository.searchUsers.mockResolvedValue(mockResult);
+
+      const result = await searchUsers.execute(filters);
+
+      expect(mockUserRepository.searchUsers).toHaveBeenCalledWith(filters);
+      expect(result).toEqual(mockResult);
+    });
   });
-}); 

@@ -43,6 +43,7 @@ export class CreateUser implements CreateUserUseCase {
       email: validatedData.email,
       role: validatedData.role,
       tenantId,
+      password: validatedData.password
     };
 
     const createdUser = await this.userRepository.create(newUser);

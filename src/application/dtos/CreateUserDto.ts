@@ -7,6 +7,7 @@ export interface CreateUserDto {
   phone: string;
   email: string;
   role: string;
+  password: string;
 }
 
 export const createUserSchema = Joi.object({
@@ -37,6 +38,11 @@ export const createUserSchema = Joi.object({
   role: Joi.string().required().valid('admin', 'manager', 'cashier', 'viewer').messages({
     'string.empty': 'Role is required',
     'any.only': 'Role must be one of: admin, manager, cashier, viewer',
+  }),
+  password: Joi.string().required().min(6).max(255).messages({
+    'string.empty': 'Password is required',
+    'string.min': 'Password must be at least 6 characters long',
+    'string.max': 'Password must not exceed 255 characters',
   }),
 });
 

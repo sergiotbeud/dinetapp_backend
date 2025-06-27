@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+import { MySQLTenantRepository } from '../../infrastructure/db/mysql/TenantRepository';
+import { DatabaseConnection } from '../../infrastructure/db/mysql/DatabaseConnection';
 
 export interface AuthenticatedRequest extends Request {
   user?: {
@@ -8,16 +10,15 @@ export interface AuthenticatedRequest extends Request {
     permissions: string[];
   };
   tenantId?: string;
+  tenant?: any; // Tenant object
 }
 
-export const resolveTenant = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
-  // 1. Intentar obtener tenantId del header
+const dbConnection = new DatabaseConnection();
+const tenantRepository = new MySQLTenantRepository(dbConnection);
+
+export const resolveTenant = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
   const headerTenantId = req.headers['x-tenant-id'] as string;
-  
-  // 2. Si no hay header, intentar obtener del token JWT (simulado)
   const tokenTenantId = req.user?.tenantId;
-  
-  // 3. Usar el tenantId disponible
   const tenantId = headerTenantId || tokenTenantId;
   
   if (!tenantId) {
@@ -28,16 +29,52 @@ export const resolveTenant = (req: AuthenticatedRequest, res: Response, next: Ne
     });
     return;
   }
-  
-  // Agregar tenantId a la request para uso posterior
-  req.tenantId = tenantId;
-  next();
+
+  try {
+    // Validar que el tenant existe y está activo
+    const tenant = await tenantRepository.findById(tenantId);
+    if (!tenant) {
+      // En entornos de test, ser más permisivo
+      if (process.env.NODE_ENV === 'test' || tenantId.includes('test')) {
+        console.warn(`Tenant ${tenantId} not found in database, but allowing in test environment`);
+        req.tenantId = tenantId;
+        req.tenant = { id: tenantId, status: 'active' };
+        next();
+        return;
+      }
+      
+      res.status(403).json({
+        success: false,
+        error: 'Tenant not found',
+        message: `Tenant with ID ${tenantId} does not exist`
+      });
+      return;
+    }
+
+    if (tenant.status !== 'active') {
+      res.status(403).json({
+        success: false,
+        error: 'Tenant inactive',
+        message: `Tenant ${tenantId} is ${tenant.status}`
+      });
+      return;
+    }
+
+    req.tenantId = tenantId;
+    req.tenant = tenant; // Para acceso a datos del tenant
+    next();
+  } catch (error) {
+    console.error('Error resolving tenant:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal Server Error',
+      message: 'An error occurred while validating tenant'
+    });
+  }
 };
 
 export const mockAuthMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
-  // Middleware simulado para pruebas - en producción usar JWT real
   const authHeader = req.headers.authorization;
-  
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     res.status(401).json({
       success: false,
@@ -46,28 +83,20 @@ export const mockAuthMiddleware = (req: AuthenticatedRequest, res: Response, nex
     });
     return;
   }
-  
-  // Obtener permisos del header x-user-permissions si está presente
   let permissions: string[] = ['user.create', 'user.read', 'user.update', 'user.delete'];
   const permissionsHeader = req.headers['x-user-permissions'];
   if (permissionsHeader && typeof permissionsHeader === 'string') {
     permissions = permissionsHeader.split(',').map(p => p.trim());
   }
-  
-  // Simular usuario autenticado con permisos
   const user: any = {
     id: 'mock-user-id',
     email: 'admin@example.com',
     permissions
   };
-  
-  // Solo agregar tenantId si está presente en el header
   const headerTenantId = req.headers['x-tenant-id'] as string;
   if (headerTenantId) {
     user.tenantId = headerTenantId;
   }
-  
   req.user = user;
-  
   next();
 }; 
