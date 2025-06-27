@@ -18,6 +18,35 @@ El sistema implementa un modelo **multitenant por base de datos compartida** don
 - La **autenticación** se basa en sesiones con validación de tenant
 - Cada tenant puede tener **múltiples usuarios** con diferentes roles
 
+## 🚦 Git Flow
+
+Este proyecto utiliza **Git Flow** como metodología de gestión de ramas para mantener un flujo de trabajo organizado y eficiente.
+
+### Estructura de Ramas:
+- **`master`** - Código en producción (antes `main`)
+- **`develop`** - Código en desarrollo (integración)
+- **`feature/*`** - Nuevas funcionalidades
+- **`release/*`** - Preparación de releases
+- **`hotfix/*`** - Correcciones urgentes de producción
+- **`bugfix/*`** - Correcciones de bugs en desarrollo
+
+### Comandos Básicos:
+```bash
+# Crear nueva funcionalidad
+git flow feature start nombre-funcionalidad
+
+# Finalizar funcionalidad
+git flow feature finish nombre-funcionalidad
+
+# Crear release
+git flow release start 1.0.0
+
+# Crear hotfix
+git flow hotfix start 1.0.1
+```
+
+**📖 Ver [GITFLOW.md](./GITFLOW.md) para la guía completa de Git Flow.**
+
 ## 🏪 Gestión de Tenants
 
 ### Estructura de un Tenant
@@ -427,4 +456,172 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) par
 Para soporte técnico o preguntas:
 - 📧 Email: soporte@dinettapp.com
 - 📖 Documentación: [docs.dinettapp.com](https://docs.dinettapp.com)
-- 🐛 Issues: [GitHub Issues](https://github.com/dinettapp/backend/issues) 
+- 🐛 Issues: [GitHub Issues](https://github.com/dinettapp/backend/issues)
+
+## 🚀 Características
+
+- **Clean Architecture** con separación clara de capas
+- **Sistema multitenant** completo
+- **Autenticación** con sesiones en memoria
+- **Base de datos MySQL** con migraciones
+- **Tests unitarios** completos (70 tests, 100% éxito)
+- **Documentación API** con Swagger
+- **Git Flow** para gestión de ramas
+
+## 📋 Estructura del Proyecto
+
+```
+src/
+├── application/          # Casos de uso y servicios
+├── domain/              # Entidades y reglas de negocio
+├── infrastructure/      # Implementaciones técnicas
+└── interfaces/          # Controladores y rutas
+```
+
+## 🛠️ Tecnologías
+
+- **Node.js** con TypeScript
+- **Express.js** para el servidor web
+- **MySQL** como base de datos
+- **Jest** para testing
+- **Swagger** para documentación
+- **Git Flow** para gestión de ramas
+
+## 🚦 Git Flow
+
+Este proyecto utiliza **Git Flow** como metodología de gestión de ramas. Ver [GITFLOW.md](./GITFLOW.md) para la guía completa.
+
+### Estructura de Ramas:
+- **`master`** - Código en producción
+- **`develop`** - Código en desarrollo
+- **`feature/*`** - Nuevas funcionalidades
+- **`release/*`** - Preparación de releases
+- **`hotfix/*`** - Correcciones urgentes
+
+### Comandos Básicos:
+```bash
+# Crear nueva funcionalidad
+git flow feature start nombre-funcionalidad
+
+# Finalizar funcionalidad
+git flow feature finish nombre-funcionalidad
+
+# Crear release
+git flow release start 1.0.0
+
+# Crear hotfix
+git flow hotfix start 1.0.1
+```
+
+## 🚀 Instalación
+
+1. **Clonar el repositorio:**
+```bash
+git clone https://github.com/sergiotbeud/dinetapp_backend.git
+cd dinetapp_backend
+```
+
+2. **Instalar dependencias:**
+```bash
+npm install
+```
+
+3. **Configurar variables de entorno:**
+```bash
+cp env.example .env
+# Editar .env con tus configuraciones
+```
+
+4. **Configurar base de datos:**
+```bash
+npm run setup:db
+```
+
+5. **Ejecutar migraciones:**
+```bash
+npm run migrate
+```
+
+## 🧪 Testing
+
+```bash
+# Ejecutar todos los tests
+npm test
+
+# Tests en modo watch
+npm run test:watch
+
+# Tests con coverage
+npm run test:coverage
+```
+
+## 🏃‍♂️ Desarrollo
+
+```bash
+# Modo desarrollo
+npm run dev
+
+# Build del proyecto
+npm run build
+
+# Ejecutar en producción
+npm start
+```
+
+## 📚 API Documentation
+
+La documentación de la API está disponible en:
+- **Swagger UI**: `http://localhost:3000/api-docs`
+- **Colección Postman**: `DinettApp.postman_collection.json`
+
+## 🔧 Scripts Disponibles
+
+- `npm run dev` - Servidor de desarrollo
+- `npm run build` - Compilar TypeScript
+- `npm start` - Ejecutar en producción
+- `npm test` - Ejecutar tests
+- `npm run test:watch` - Tests en modo watch
+- `npm run test:coverage` - Tests con coverage
+- `npm run lint` - Verificar código
+- `npm run lint:fix` - Corregir código automáticamente
+- `npm run setup:db` - Configurar base de datos
+
+## 📁 Estructura de Tests
+
+```
+tests/
+├── unit/                # Tests unitarios
+│   ├── use-cases/      # Tests de casos de uso
+│   └── repositories/   # Tests de repositorios
+└── helpers/            # Helpers para tests
+```
+
+## 🔐 Autenticación
+
+El sistema utiliza autenticación basada en sesiones con los siguientes roles:
+- **admin** - Acceso completo
+- **manager** - Gestión de usuarios y operaciones
+- **cashier** - Operaciones de caja
+
+## 🏢 Sistema Multitenant
+
+Cada tenant tiene:
+- Usuarios independientes
+- Configuraciones propias
+- Aislamiento de datos
+
+## 📝 Licencia
+
+Este proyecto está bajo la Licencia MIT.
+
+## 🤝 Contribución
+
+1. Crear una rama feature: `git flow feature start nombre-funcionalidad`
+2. Hacer los cambios necesarios
+3. Ejecutar tests: `npm test`
+4. Finalizar feature: `git flow feature finish nombre-funcionalidad`
+5. Crear Pull Request a `develop`
+
+## 📞 Soporte
+
+Para soporte técnico, contactar al equipo de desarrollo. 
